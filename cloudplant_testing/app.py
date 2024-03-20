@@ -26,6 +26,9 @@ def index():
         <p>Light Intensity: {{ data.get('lightIntensity', 'N/A') }}</p>
         <p>Temperature: {{ data.get('temperature', 'N/A') }}°C</p>
         <p>Humidity: {{ data.get('humidity', 'N/A') }}%</p>
+        <p>SensorMoisture1: {{ data.get('SensorMoisture1', 'N/A') }}</p>
+        <p>SensorMoisture2: {{ data.get('SensorMoisture2', 'N/A') }}</p>
+        <p>SensorMoisture3: {{ data.get('SensorMoisture3', 'N/A') }}</p>
     </body>
     </html>
     """, data=received_data)
