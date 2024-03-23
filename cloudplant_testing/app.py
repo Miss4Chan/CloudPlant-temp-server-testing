@@ -41,7 +41,7 @@ def index():
                 <td>{{ value }}</td>
             </tr>
             {% endfor %}
-        </table>
+        </table>     
     </body>
     </html>
     """, data=data)
