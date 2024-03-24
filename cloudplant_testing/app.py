@@ -12,15 +12,18 @@ redis_db = redis.Redis(host=redis_host, port=redis_port)
 @app.route('/data', methods=['POST'])
 def receive_data():
     data = request.json
-    # Store data in Redis
     for key, value in data.items():
-        redis_db.set(key, value)
+        redis_db.rpush(key, value)
+        redis_db.ltrim(key, -5, -1)
     return jsonify(success=True)
 
 ##getot za prikazhuvanje na datata
 @app.route('/')
 def index():
-    data = {key.decode('utf-8'): redis_db.get(key).decode('utf-8') for key in redis_db.keys()}
+    data = {}
+    for key in redis_db.keys():
+        values = redis_db.lrange(key, -5, -1)
+        data[key.decode('utf-8')] = [v.decode('utf-8') for v in values]
 
     return render_template_string("""
     <!DOCTYPE html>
@@ -33,19 +36,18 @@ def index():
         <table border="1">
             <tr>
                 <th>Field</th>
-                <th>Value</th>
+                <th>Values</th>
             </tr>
-            {% for key, value in data.items() %}
+            {% for key, values in data.items() %}
             <tr>
                 <td>{{ key }}</td>
-                <td>{{ value }}</td>
+                <td>{{ values }}</td>
             </tr>
             {% endfor %}
-        </table>     
+        </table>
     </body>
     </html>
     """, data=data)
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
